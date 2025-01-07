@@ -46,6 +46,7 @@ func (ec *executionContext) _{{$object.Name}}(ctx context.Context, sel ast.Selec
 		})
 
 		rootCtx := func(ctx context.Context, field graphql.CollectedField) context.Context {
+      fmt.Printf("GQLGEN ROOT CTX %p\n", ctx)
       return graphql.WithRootFieldContext(ctx, &graphql.RootFieldContext{
   			Object: field.Name,
 	  		Field: field,
