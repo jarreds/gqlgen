@@ -158,7 +158,8 @@ func (ec *executionContext) {{ $field.FieldContextFunc }}({{ if not $field.Args 
 	{{- $useFunctionSyntaxForExecutionContext := .UseFunctionSyntaxForExecutionContext -}}
 	{{- if .Field.HasDirectives -}}
 		directive0 := func(rctx context.Context) (any, error) {
-			// ctx = rctx  // use context from middleware stack in children
+			ctx = rctx  // use context from middleware stack in children
+      fmt.Printf("FIELD USING CTX %p\n", rctx)
 			{{ template "fieldDefinition" .Field }}
 		}
 		{{ template "implDirectives" (dict "Field" .Field "UseFunctionSyntaxForExecutionContext" $useFunctionSyntaxForExecutionContext) }}
