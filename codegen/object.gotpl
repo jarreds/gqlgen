@@ -46,13 +46,10 @@ func (ec *executionContext) _{{$object.Name}}(ctx context.Context, sel ast.Selec
 		})
 
 		rootCtx := func(ctx context.Context, field graphql.CollectedField) context.Context {
-      fmt.Printf("GQLGEN ROOT CTX %p\n", ctx)
-      octx := graphql.WithRootFieldContext(ctx, &graphql.RootFieldContext{
+      return graphql.WithRootFieldContext(ctx, &graphql.RootFieldContext{
   			Object: field.Name,
 	  		Field: field,
   		})
-      fmt.Printf("GQLGEN NEW ROOT CTX %p\n", octx)
-      return octx
     }
 	{{end}}
 
@@ -68,7 +65,6 @@ func (ec *executionContext) _{{$object.Name}}(ctx context.Context, sel ast.Selec
 				field := field
 
 				innerFunc := func(ctx context.Context, {{ if $field.TypeReference.GQL.NonNull }}fs{{ else }}_{{ end }} *graphql.FieldSet) (res graphql.Marshaler) {
-          fmt.Printf("GQL INNER USING CTX %p\n", ctx)
 					{{- if not $.Config.OmitPanicHandler }}
 					defer func() {
 						if r := recover(); r != nil {
@@ -95,10 +91,8 @@ func (ec *executionContext) _{{$object.Name}}(ctx context.Context, sel ast.Selec
 
 				{{if $object.Root}}
 					rrm := func(ctx context.Context) graphql.Marshaler {
-          fmt.Printf("GQL RRM USING CTX %p\n", ctx)
 						return ec.OperationContext.RootResolverMiddleware(ctx,
 							func(ctx context.Context) graphql.Marshaler {
-                fmt.Printf("GQL RRM INTERNAL USING CTX %p\n", ctx)
                 return innerFunc(ctx, out)
               })
 					}
